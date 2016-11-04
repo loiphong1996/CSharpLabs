@@ -9,7 +9,7 @@ namespace Lab1
 {
     class CD : IComparable<CD>
     {
-        private int id;
+        private string id;
         private string album;
         private string singer;
         private int duration;
@@ -20,7 +20,7 @@ namespace Lab1
         {
         }
 
-        public CD(string album, int duration, Genre genre, int id, string singer, List<string> songList)
+        public CD(string album, int duration, Genre genre, string id, string singer, List<string> songList)
         {
             this.album = album;
             this.duration = duration;
@@ -30,7 +30,7 @@ namespace Lab1
             this.songList = songList;
         }
 
-        public int Id
+        public string Id
         {
             get { return id; }
             set { id = value; }
@@ -73,10 +73,10 @@ namespace Lab1
 
         public override string ToString()
         {
-            return "ID: " + id
-                   + " Album: " + album
-                   + " Singer: " + singer
-                   + " Duration: " + duration
+            return " ID: " + id
+                   + "\n Album: " + album
+                   + "\n Singer: " + singer
+                   + "\n Duration: " + duration
                    + "\n List of Song: \n" + SongListToString()
                    + " Genre: " + genre;
         }
@@ -84,9 +84,9 @@ namespace Lab1
         private string SongListToString()
         {
             StringBuilder builder = new StringBuilder();
-            foreach (string s in songList)
+            for (int i = 0; i < songList.Count; i++)
             {
-                builder.Append("\t"+s + "\n");
+                builder.Append("\t["+i+"]" + songList[i] + "\n");
             }
             return builder.ToString();
         }

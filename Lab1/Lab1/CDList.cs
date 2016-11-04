@@ -25,9 +25,9 @@ namespace Lab1
             }
         }
 
-        public CD Find(int id)
+        public CD Find(string id)
         {
-            return Find(cd => cd.Id == id);
+            return Find(cd => cd.Id.Equals(id));
         }
 
         public void SortByAlbum(bool asc)
@@ -59,40 +59,56 @@ namespace Lab1
 
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (int i = 0; i < Count; i++)
+            if (Count > 0)
             {
-                stringBuilder.Append(this[i]);
-            }
+                StringBuilder stringBuilder = new StringBuilder();
 
-            return stringBuilder.ToString();
+                for (int i = 0; i < Count; i++)
+                {
+                    stringBuilder.Append("\nCD[" +i+ "]:\n");
+                    stringBuilder.Append(this[i]);
+                }
+
+                return stringBuilder.ToString();
+            }
+            else
+            {
+                return "No CD available to show!";
+            }
         }
 
-        public List<CD> SearchByAlbum(string album)
+        public CDList SearchByAlbum(string album)
         {
             var cdEnum = 
                 from cd in this
-                where cd.Album.Contains(album)
+                where cd.Album.ToUpper().Contains(album.ToUpper())
                 select cd;
             
-            return cdEnum.ToList();
+            CDList cdList = new CDList();
+            cdList.AddRange(cdEnum);
+            return cdList;
         }
-        public List<CD> SearchBySinger(string singer)
+        public CDList SearchBySinger(string singer)
         {
             var cdEnum = 
                 from cd in this
-                where cd.Singer.Contains(singer)
+                where cd.Singer.ToUpper().Contains(singer.ToUpper())
                 select cd;
-            return cdEnum.ToList();
+
+            CDList cdList = new CDList();
+            cdList.AddRange(cdEnum);
+            return cdList;
         }
-        public List<CD> SearchBySong(string song)
+        public CDList SearchBySong(string song)
         {
             var cdEnum = 
                 from cd in this
-                where cd.SongList.Exists(s => s.Contains(song))
+                where cd.SongList.Exists(s => s.ToUpper().Contains(song.ToUpper()))
                 select cd;
-            return cdEnum.ToList();
+
+            CDList cdList = new CDList();
+            cdList.AddRange(cdEnum);
+            return cdList;
         }
     }
 }

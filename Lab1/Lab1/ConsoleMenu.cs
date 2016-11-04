@@ -9,6 +9,9 @@ namespace Lab1
     class ConsoleMenu
     {
         private List<string> optionsList;
+        private bool border;
+        private string title;
+        private bool checkbox;
         private int longestOptionLength;
         private int chosenLine = 0;
 
@@ -24,14 +27,32 @@ namespace Lab1
             longestOptionLength = GetLongestOptionLength();
         }
 
-        public string RenderAll(bool border = true)
+        public bool Border
+        {
+            get { return border; }
+            set { border = value; }
+        }
+
+        public string Title
+        {
+            get { return title; }
+            set { title = value; }
+        }
+
+        public bool Checkbox
+        {
+            get { return checkbox; }
+            set { checkbox = value; }
+        }
+
+        public string RenderAll()
         {
             StringBuilder stringBuilder = new StringBuilder();
 
             if (border)
             {
                 stringBuilder.Append('=', longestOptionLength/2 + 1);
-                stringBuilder.Append("Menu");
+                stringBuilder.Append(title);
                 stringBuilder.Append('=', longestOptionLength/2 + 1);
                 stringBuilder.Append('\n', 2);
             }
@@ -51,7 +72,7 @@ namespace Lab1
             return stringBuilder.ToString();
         }
 
-        public string RenderLine(int index, bool checkbox = true)
+        public string RenderLine(int index)
         {
             if (index != Clamp(index, 0, optionsList.Count))
                 return null;
