@@ -16,6 +16,20 @@ namespace Lab1
         private List<string> songList;
         private Genre genre;
 
+        public CD()
+        {
+        }
+
+        public CD(string album, int duration, Genre genre, int id, string singer, List<string> songList)
+        {
+            this.album = album;
+            this.duration = duration;
+            this.genre = genre;
+            this.id = id;
+            this.singer = singer;
+            this.songList = songList;
+        }
+
         public int Id
         {
             get { return id; }
@@ -63,7 +77,7 @@ namespace Lab1
                    + " Album: " + album
                    + " Singer: " + singer
                    + " Duration: " + duration
-                   + " List of Song: \n" + SongListToString()
+                   + "\n List of Song: \n" + SongListToString()
                    + " Genre: " + genre;
         }
 
@@ -72,7 +86,7 @@ namespace Lab1
             StringBuilder builder = new StringBuilder();
             foreach (string s in songList)
             {
-                builder.Append(s + "\n");
+                builder.Append("\t"+s + "\n");
             }
             return builder.ToString();
         }

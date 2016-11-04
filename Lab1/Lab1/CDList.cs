@@ -20,8 +20,8 @@ namespace Lab1
             }
             else
             {
-                Add(cd);
-                return false;
+                base.Add(cd);
+                return true;
             }
         }
 
