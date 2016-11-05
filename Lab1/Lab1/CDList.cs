@@ -73,7 +73,7 @@ namespace Lab1
             }
             else
             {
-                return "No CD available to show!";
+                return "No CD available to show!\n";
             }
         }
 

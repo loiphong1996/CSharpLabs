@@ -73,12 +73,16 @@ namespace Lab1
 
         public override string ToString()
         {
-            return " ID: " + id
+            string s =  " ID: " + id
                    + "\n Album: " + album
                    + "\n Singer: " + singer
                    + "\n Duration: " + duration
-                   + "\n List of Song: \n" + SongListToString()
-                   + " Genre: " + genre;
+                   + "\n List of Song: \n" + SongListToString();
+            if (genre > 0)
+            {
+                s += " Genre: " + genre;
+            }
+            return s;
         }
 
         private string SongListToString()
