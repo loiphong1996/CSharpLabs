@@ -14,8 +14,8 @@ namespace Lab1
         private bool border;
         private string title;
         private bool checkbox;
-        private int longestOptionLength;
-        private int chosenLine = 0;
+        private int longestOptionLength = 0;
+        private int chosenLine = -1;
 
 
         public ConsoleMenu(bool checkbox = true, bool border = false, string title = "")
@@ -29,6 +29,7 @@ namespace Lab1
         public void AddOption(string option)
         {
             optionsList.Add(option);
+            chosenLine = -0;
             longestOptionLength = GetLongestOptionLength();
         }
 
@@ -38,6 +39,7 @@ namespace Lab1
             {
                 optionsList.Add(el);
             }
+            chosenLine = -0;
             longestOptionLength = GetLongestOptionLength();
         }
 
@@ -71,9 +73,16 @@ namespace Lab1
                 stringBuilder.Append('\n', 2);
             }
 
-            for (int i = 0; i < optionsList.Count; i++)
+            if (optionsList.Count > 0)
             {
-                stringBuilder.Append(RenderLine(i) + "\n");
+                for (int i = 0; i < optionsList.Count; i++)
+                {
+                    stringBuilder.AppendLine(RenderLine(i));
+                }
+            }
+            else
+            {
+                stringBuilder.AppendLine("No options available");
             }
 
             if (border)
@@ -141,8 +150,11 @@ namespace Lab1
                 return max;
             return value;
         }
+    }
 
-        public int GetMenuInput()
+    static class ConsoleInput
+    {
+        public static int GetMenuInput(ConsoleMenu menu)
         {
             Console.CursorVisible = false;
             int originLeft = Console.CursorLeft;
@@ -150,24 +162,24 @@ namespace Lab1
             while (true)
             {
                 Console.SetCursorPosition(originLeft, originTop);
-                ConsoleWrite(this.RenderAll());
+                Console.Write(menu.RenderAll());
                 ConsoleKey key = Console.ReadKey().Key;
                 switch (key)
                 {
                     case ConsoleKey.UpArrow:
-                        this.MoveUp();
+                        menu.MoveUp();
                         break;
                     case ConsoleKey.DownArrow:
-                        this.MoveDown();
+                        menu.MoveDown();
                         break;
                     case ConsoleKey.Enter:
                         Console.CursorVisible = true;
-                        return this.ChosenLine;
+                        return menu.ChosenLine;
                 }
             }
         }
 
-        public string GetString(String message, Regex regex = null, ConsoleKey exitKey = ConsoleKey.Escape)
+        public static string GetString(String message, Regex regex = null, ConsoleKey exitKey = ConsoleKey.Escape)
         {
             if (regex == null)
             {
@@ -183,12 +195,12 @@ namespace Lab1
                 }
                 else
                 {
-                    ConsoleWrite("Invalid Input!\n", foreColor: ConsoleColor.Red);
+                    ColoredWriteline("Invalid Input!", foreColor: ConsoleColor.Red);
                 }
             }
         }
 
-        public int GetInt32(string message)
+        public static int GetInt32(string message)
         {
             while (true)
             {
@@ -207,7 +219,7 @@ namespace Lab1
                         || ex is OverflowException
                     )
                     {
-                        ConsoleWrite("Input must be interger!\n", foreColor: ConsoleColor.Red);
+                        ColoredWriteline("Input must be interger!", foreColor: ConsoleColor.Red);
                     }
                     else
                     {
@@ -217,26 +229,32 @@ namespace Lab1
             }
         }
 
-        public Enum GetEnum(Enum en)
+        public static T GetEnum<T>() where T : struct, IConvertible
         {
-            ConsoleMenu enumMenu = new ConsoleMenu();
-            string[] names = Enum.GetNames(typeof(Enum));
-            enumMenu.SetOptions(names);
-            int choice = enumMenu.GetMenuInput();
-            return (Enum)choice;
+            if (typeof(T).IsEnum)
+            {
+                ConsoleMenu enumMenu = new ConsoleMenu();
+                string[] names = Enum.GetNames(typeof(T));
+                enumMenu.SetOptions(names);
+                int choice = GetMenuInput(enumMenu);
+                return (T) (object) choice;
+            }
+            else
+            {
+                throw new ArgumentException("Type must be Enum");
+            }
         }
 
-        public void WaitForKey()
+        public static void WaitForKey()
         {
             Console.CursorVisible = false;
-            Console.WriteLine("Successful!");
-            ConsoleWrite("Press any key to continue", foreColor: ConsoleColor.Green);
+            ColoredWriteline("Press any key to continue", foreColor: ConsoleColor.Green);
             Console.ReadKey();
             Console.CursorVisible = true;
         }
 
 
-        public void ConsoleWrite(
+        public static void ColoredWrite(
             string message,
             ConsoleColor foreColor = ConsoleColor.White,
             ConsoleColor backColor = ConsoleColor.Black)
@@ -246,6 +264,14 @@ namespace Lab1
             Console.Write(message);
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
+        }
+
+        public static void ColoredWriteline(
+            string message,
+            ConsoleColor foreColor = ConsoleColor.White,
+            ConsoleColor backColor = ConsoleColor.Black)
+        {
+            ColoredWrite(message + "\n", foreColor, backColor);
         }
     }
 }
