@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Lab1;
 
 namespace CarManagerApp
@@ -16,16 +17,12 @@ namespace CarManagerApp
             new Program().Run();
         }
 
-        private ConsoleMenu mainMenu = new ConsoleMenu();
+        private ConsoleMenu mainMenu;
         private CDList cdList = new CDList();
 
         private void Run()
         {
-            
-
-            mainMenu.Checkbox = true;
-            mainMenu.Title = "Menu";
-            mainMenu.Border = true;
+            mainMenu = new ConsoleMenu(border:true,title:"Menu");
             mainMenu.AddOption("Add new CD."); //0
             mainMenu.AddOption("Update a CD."); //1
             mainMenu.AddOption("Delete a CD."); //2
@@ -42,6 +39,7 @@ namespace CarManagerApp
             while (!exit)
             {
                 Console.Clear();
+                
                 int inputValue = GetMenuInput(mainMenu);
                 Console.Clear();
                 mainMenu.Checkbox = false;
@@ -84,6 +82,7 @@ namespace CarManagerApp
                 }
             }
         }
+
 
         private void SearchSong()
         {
@@ -145,7 +144,7 @@ namespace CarManagerApp
 
             string album = GetString("Enter CD's album: ");
             string singer = GetString("Enter CD's singer: ");
-            int duration = GetInt32("Enter CD's duration: ");
+            int duration = GetInt32("Enter CD's duration(Miliseconds): ");
 
             Regex nRegex = new Regex("^(n|N)$");
             List<string> songList = new List<string>();
@@ -185,7 +184,7 @@ namespace CarManagerApp
             WaitForKey();
         }
 
-        private CD ChooseCd(List<CD> cdList)
+        public static CD ChooseCd(List<CD> cdList)
         {
             ConsoleMenu cdMenu = new ConsoleMenu();
             cdMenu.Border = false;
@@ -193,140 +192,14 @@ namespace CarManagerApp
 
             foreach (CD cd in cdList)
             {
-                cdMenu.AddOption(cd.Id.ToString());
+                cdMenu.AddOption(cd.Id);
             }
 
             int input = GetMenuInput(cdMenu);
             return cdList[input];
         }
 
-        private int GetMenuInput(ConsoleMenu menu)
-        {
-            Console.CursorVisible = false;
-            int originLeft = Console.CursorLeft;
-            int originTop = Console.CursorTop;
-            while (true)
-            {
-                Console.SetCursorPosition(originLeft, originTop);
-                ConsoleWrite(menu.RenderAll());
-                ConsoleKey key = Console.ReadKey().Key;
-                switch (key)
-                {
-                    case ConsoleKey.UpArrow:
-                        menu.MoveUp();
-                        break;
-                    case ConsoleKey.DownArrow:
-                        menu.MoveDown();
-                        break;
-                    case ConsoleKey.Enter:
-                        Console.CursorVisible = true;
-                        return menu.ChosenLine;
-                }
-            }
-        }
-
-        private void Input(out CD cd)
-        {
-            string id = "";
-            bool valid = false;
-            while (!valid)
-            {
-                id = GetString("Enter CD's ID: ");
-                CD tmpCd = cdList.Find(id);
-                if (tmpCd != null)
-                {
-                    ConsoleWrite("CD with id " + id + " already taken!\n", foreColor: ConsoleColor.Red);
-                }
-                else
-                {
-                    valid = true;
-                }
-            }
-
-
-            string album = GetString("Enter CD's album: ");
-            string singer = GetString("Enter CD's singer: ");
-            int duration = GetInt32("Enter CD's duration: ");
-
-
-            Regex nRegex = new Regex("^(n|N)$");
-            List<string> songList = new List<string>();
-            while (true)
-            {
-                string song = GetString("Enter a song in the CD(N to exit): ");
-                if (nRegex.IsMatch(song))
-                {
-                    break;
-                }
-                songList.Add(song);
-            }
-            Genre genre;
-            GetGenre(out genre);
-
-            cd = new CD(album, duration, genre, id, singer, songList);
-        }
-
-
-        private string GetString(String message, Regex regex = null,ConsoleKey exitKey = ConsoleKey.Escape)
-        {
-            if (regex == null)
-            {
-                regex = new Regex(".+");
-            }
-            while (true)
-            {
-                Console.Write(message);
-                string s = Console.ReadLine();
-                if (regex.IsMatch(s))
-                {
-                    return s;
-                }
-                else
-                {
-                    ConsoleWrite("Invalid Input!\n", foreColor: ConsoleColor.Red);
-                }
-            }
-        }
-
-        private int GetInt32(string message)
-        {
-            while (true)
-            {
-                try
-                {
-                    Console.Write(message);
-                    string str = Console.ReadLine();
-                    int i = Int32.Parse(str);
-                    return i;
-                }
-                catch (Exception ex)
-                {
-                    if (
-                        ex is ArgumentNullException
-                        || ex is FormatException
-                        || ex is OverflowException
-                    )
-                    {
-                        ConsoleWrite("Input must be interger!\n", foreColor: ConsoleColor.Red);
-                    }
-                    else
-                    {
-                        throw ex;
-                    }
-                }
-            }
-        }
-
-        private void WaitForKey()
-        {
-            Console.CursorVisible = false;
-            Console.WriteLine("Successful!");
-            ConsoleWrite("Press any key to continue", foreColor: ConsoleColor.Green);
-            Console.ReadKey();
-            Console.CursorVisible = true;
-        }
-
-        private void GetGenre(out Genre genre)
+        public static void GetGenre(out Genre genre)
         {
             ConsoleMenu genreMenu = new ConsoleMenu();
             genreMenu.Border = false;
@@ -340,19 +213,9 @@ namespace CarManagerApp
             Console.Write("Choose a genre: \n");
 
             int input = GetMenuInput(genreMenu);
-            genre = (Genre) input;
+            genre = (Genre)input;
         }
 
-        private void ConsoleWrite(
-            string message,
-            ConsoleColor foreColor = ConsoleColor.White,
-            ConsoleColor backColor = ConsoleColor.Black)
-        {
-            Console.ForegroundColor = foreColor;
-            Console.BackgroundColor = backColor;
-            Console.Write(message);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
-        }
+
     }
 }
