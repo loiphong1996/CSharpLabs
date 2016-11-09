@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab1
+namespace CDLib
 {
-    class CDList : List<CD>
+    public class CDList : List<CD>
     {
         public CDList()
         {
@@ -65,7 +65,7 @@ namespace Lab1
 
                 for (int i = 0; i < Count; i++)
                 {
-                    stringBuilder.Append("\nCD[" +i+ "]:\n");
+                    stringBuilder.AppendLine("\nCD[" +i+ "]:");
                     stringBuilder.Append(this[i]);
                 }
 

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab1
+namespace CDLib
 {
-    class CD : IComparable<CD>
+    public class CD : IComparable<CD>
     {
         private string id;
         private string album;
@@ -78,7 +78,7 @@ namespace Lab1
                    + "\n Singer: " + singer
                    + "\n Duration: " + duration
                    + "\n List of Song: \n" + SongListToString();
-            if (genre > 0)
+            if (genre >= 0)
             {
                 s += " Genre: " + genre;
             }
@@ -112,7 +112,7 @@ namespace Lab1
     }
     
 
-    enum Genre
+    public enum Genre
     {
         Rock,
         Rap,
