@@ -1,1 +1,7 @@
 D:\Project\C#Labs\Lab1\Lab1\bin\Debug\Lab1.exe.config
+D:\Project\CSharpLabs\Lab1\Lab1\bin\Debug\Lab1.exe.config
+D:\Project\CSharpLabs\Lab1\Lab1\bin\Debug\Lab1.exe
+D:\Project\CSharpLabs\Lab1\Lab1\bin\Debug\Lab1.pdb
+D:\Project\CSharpLabs\Lab1\Lab1\obj\Debug\Lab1.csprojResolveAssemblyReference.cache
+D:\Project\CSharpLabs\Lab1\Lab1\obj\Debug\Lab1.exe
+D:\Project\CSharpLabs\Lab1\Lab1\obj\Debug\Lab1.pdb
