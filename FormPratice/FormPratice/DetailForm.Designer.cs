@@ -28,12 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.submitButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.loadBtn = new System.Windows.Forms.Button();
+            this.saveBtn = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.editBtn = new System.Windows.Forms.Button();
             this.employeeDataGridView = new System.Windows.Forms.DataGridView();
@@ -45,14 +43,11 @@
             this.addressColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.qualificationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.salaryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.employeeDataGridView)).BeginInit();
             this.SuspendLayout();
-            // 
-            // errorProvider1
-            // 
-            this.errorProvider1.ContainerControl = this;
             // 
             // submitButton
             // 
@@ -66,8 +61,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.button5);
-            this.groupBox2.Controls.Add(this.button4);
+            this.groupBox2.Controls.Add(this.loadBtn);
+            this.groupBox2.Controls.Add(this.saveBtn);
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.editBtn);
             this.groupBox2.Controls.Add(this.submitButton);
@@ -78,23 +73,25 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Controls";
             // 
-            // button5
+            // loadBtn
             // 
-            this.button5.Location = new System.Drawing.Point(350, 19);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(95, 23);
-            this.button5.TabIndex = 29;
-            this.button5.Text = "Load from file";
-            this.button5.UseVisualStyleBackColor = true;
+            this.loadBtn.Location = new System.Drawing.Point(350, 19);
+            this.loadBtn.Name = "loadBtn";
+            this.loadBtn.Size = new System.Drawing.Size(95, 23);
+            this.loadBtn.TabIndex = 29;
+            this.loadBtn.Text = "Load from file";
+            this.loadBtn.UseVisualStyleBackColor = true;
+            this.loadBtn.Click += new System.EventHandler(this.loadBtn_Click);
             // 
-            // button4
+            // saveBtn
             // 
-            this.button4.Location = new System.Drawing.Point(269, 19);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 28;
-            this.button4.Text = "Save to file";
-            this.button4.UseVisualStyleBackColor = true;
+            this.saveBtn.Location = new System.Drawing.Point(269, 19);
+            this.saveBtn.Name = "saveBtn";
+            this.saveBtn.Size = new System.Drawing.Size(75, 23);
+            this.saveBtn.TabIndex = 28;
+            this.saveBtn.Text = "Save to file";
+            this.saveBtn.UseVisualStyleBackColor = true;
+            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
             // 
             // button3
             // 
@@ -104,6 +101,7 @@
             this.button3.TabIndex = 27;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // editBtn
             // 
@@ -113,6 +111,7 @@
             this.editBtn.TabIndex = 26;
             this.editBtn.Text = "Edit";
             this.editBtn.UseVisualStyleBackColor = true;
+            this.editBtn.Click += new System.EventHandler(this.editBtn_Click);
             // 
             // employeeDataGridView
             // 
@@ -129,6 +128,7 @@
             this.qualificationColumn,
             this.salaryColumn});
             this.employeeDataGridView.Location = new System.Drawing.Point(12, 92);
+            this.employeeDataGridView.MultiSelect = false;
             this.employeeDataGridView.Name = "employeeDataGridView";
             this.employeeDataGridView.Size = new System.Drawing.Size(819, 288);
             this.employeeDataGridView.TabIndex = 26;
@@ -173,6 +173,14 @@
             this.salaryColumn.HeaderText = "Salary";
             this.salaryColumn.Name = "salaryColumn";
             // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.Filter = "Data file|*.dat";
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // DetailForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -183,7 +191,6 @@
             this.Name = "DetailForm";
             this.Text = "Form";
             this.Load += new System.EventHandler(this.mainForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.employeeDataGridView)).EndInit();
             this.ResumeLayout(false);
@@ -191,11 +198,10 @@
         }
 
         #endregion
-        private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.Button submitButton;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button loadBtn;
+        private System.Windows.Forms.Button saveBtn;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button editBtn;
         private System.Windows.Forms.DataGridView employeeDataGridView;
@@ -207,6 +213,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn addressColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn qualificationColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn salaryColumn;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

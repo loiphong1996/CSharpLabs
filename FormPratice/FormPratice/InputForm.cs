@@ -12,16 +12,21 @@ namespace FormPratice
 {
     public partial class InputForm : Form
     {
-        public InputForm()
+        private bool bAdd;
+        public InputForm(bool bAdd = true)
         {
             InitializeComponent();
+            this.bAdd = bAdd;
+            if (bAdd == false)
+                addButton.Text = "Save";
 
             nationalcomboBox.Items.Add("vietnam");
+            nationalcomboBox.Items.Add("america");
         }
 
         private DataGridView GetDataGridView()
         {
-            return (this.Owner as DetailForm).GetDataGridView();
+            return (Owner as DetailForm).GetDataGridView();
         }
 
         private void addNewEmployee()
@@ -103,10 +108,79 @@ namespace FormPratice
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            if (validateInput() == true)
+            if (bAdd)
             {
-                addNewEmployee();
+                if (validateInput() == true)
+                {
+                    addNewEmployee();
+                }
             }
+            else
+            {
+                updateInfo();
+            }
+            
+        }
+
+        private void updateInfo()
+        {
+            DataGridView employeeDataGridView = GetDataGridView();
+            string gender = "";
+            if (radioMale.Checked == true)
+            {
+                gender = " Male";
+            }
+            else if (radioFemale.Checked == true)
+            {
+                gender = "Female";
+            }
+
+            DataGridViewRow r = employeeDataGridView.SelectedRows[0];
+            r.SetValues(
+                nameTextBox.Text,
+                datePickerBirth.Value.ToShortDateString(),
+                gender,
+                nationalcomboBox.Text,
+                phoneMaskedTextBox.Text,
+                addressrichTextBox.Text,
+                qualificationTextBox.Text,
+                salaryTextBox.Text
+                );
+            
+
+        }
+
+        public void setInfo(
+            string fullname,string dateOfBirth,string gender,string national,
+            string phone, string address,string qualification, string salary)
+        {
+            nameTextBox.Text = fullname;
+            datePickerBirth.Value = DateTime.Parse(dateOfBirth);
+            if (gender.Equals("male"))
+                radioMale.Checked = true;
+            else
+                radioFemale.Checked = true;
+            nationalcomboBox.SelectedItem = national;
+            phoneMaskedTextBox.Text = phone;
+            addressrichTextBox.Text = address;
+            qualificationTextBox.Text = qualification;
+            salaryTextBox.Text = salary;
+
+        }
+
+        public void setInfo(DataGridViewRow row)
+        {
+            string fullname = row.Cells["NameColumn"].Value.ToString();
+            string dateOfBirth = row.Cells["DateOfBirthColumn"].Value.ToString();
+            string gender = row.Cells["GenderColumn"].Value.ToString();
+            string national = row.Cells["nationalColumn"].Value.ToString();
+            string phone = row.Cells["phoneColumn"].Value.ToString();
+            string address = row.Cells["addressColumn"].Value.ToString();
+            string qualification = row.Cells["qualificationColumn"].Value.ToString();
+            string salary = row.Cells["salaryColumn"].Value.ToString();
+
+
+            setInfo(fullname,dateOfBirth,gender,national,phone,address,qualification,salary);
         }
     }
 }
