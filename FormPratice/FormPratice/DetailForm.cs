@@ -10,60 +10,30 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data.SqlClient;
+
 
 namespace FormPratice
 {
     public partial class DetailForm : Form
     {
         private DataTable empDataTable;
+
+        private SqlConnection con;
+        private SqlCommand cmd;
+        private SqlDataReader dr;
+        private string connectionString =
+            @"server=PHONGTLSE61770;database=EmployeeDB;uid=sa;pwd=1234";
+
         public DetailForm()
         {
             InitializeComponent();
 
-//            empDataTable = new DataTable();
-//            
-//            DataColumn dc = new DataColumn();
-//            dc.ColumnName = "fullNameColumn";
-//            dc.Caption = "Full Name";
-//            dc.DataType = typeof(string);
-//            empDataTable.Columns.Add(dc);
-//            //            ---------------            
-//            dc.ColumnName = "dateOfBirthColumn";
-//            dc.Caption = "Date of birth";
-//            dc.DataType = typeof(DateTime);
-//            empDataTable.Columns.Add(dc);
-//            //            ---------------            
-//            dc.ColumnName = "genderColumn";
-//            dc.Caption = "Gender";
-//            dc.DataType = typeof(string);
-//            empDataTable.Columns.Add(dc);
-//            //            ---------------            
-//            dc.ColumnName = "nationalColumn";
-//            dc.Caption = "National";
-//            dc.DataType = typeof(string);
-//            empDataTable.Columns.Add(dc);
-//            //            ---------------            
-//            dc.ColumnName = "phoneColumn";
-//            dc.Caption = "Phone";
-//            dc.DataType = typeof(string);
-//            empDataTable.Columns.Add(dc);
-//            //            ---------------            
-//            dc.ColumnName = "addressColumn";
-//            dc.Caption = "Address";
-//            dc.DataType = typeof(string);
-//            empDataTable.Columns.Add(dc);
-//            //            ---------------            
-//            dc.ColumnName = "qualificationColumn";
-//            dc.Caption = "Qualification";
-//            dc.DataType = typeof(string);
-//            empDataTable.Columns.Add(dc);
-//            //            ---------------            
-//            dc.ColumnName = "salaryColumn";
-//            dc.Caption = "Salary";
-//            dc.DataType = typeof(string);
-//            empDataTable.Columns.Add(dc);
-            
+            con = new SqlConnection();
+            con.ConnectionString = connectionString;
 
+            LoadEmployee();
+            
         }
 
         public DataGridView GetDataGridView()
@@ -71,6 +41,41 @@ namespace FormPratice
             return employeeDataGridView;
         }
 
+        private void LoadEmployee()
+        {
+            try
+            {
+                con.Open();
+                cmd = new SqlCommand();
+                cmd.Connection = con;
+                cmd.CommandText = "select * from Employees";
+                dr = cmd.ExecuteReader();
+                employeeDataGridView.Rows.Clear();
+                while (dr.Read())
+                {
+                    DataGridViewRow r = new DataGridViewRow();
+                    r.CreateCells(employeeDataGridView);
+                    r.SetValues(
+                        dr[0],
+                        dr[1],
+                        dr[2],
+                        dr[3],
+                        dr[4],
+                        dr[5],
+                        dr[6],
+                        dr[7],
+                        dr[8]
+                    );
+
+                    employeeDataGridView.Rows.Add(r);
+                }
+            }
+            finally
+            {
+                dr.Close();
+                con.Close();
+            }
+        }
 
         private void submitButton_Click(object sender, EventArgs e)
         {
@@ -112,8 +117,44 @@ namespace FormPratice
             {
                 DataGridViewRow r = employeeDataGridView.SelectedRows[0];
                 employeeDataGridView.Rows.Remove(r);
-                
+
+                try
+                {
+                    con.Open();
+                    cmd = con.CreateCommand();
+                    cmd.CommandText = "[UpdateEmployee]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    SqlParameterCollection paramCollection = cmd.Parameters;
+                    paramCollection.Add("@ID", SqlDbType.Int);
+                    paramCollection.Add("@FullName", SqlDbType.VarChar, 50);
+                    paramCollection.Add("@DOB", SqlDbType.DateTime);
+                    paramCollection.Add("@Gender", SqlDbType.Char, 1);
+                    paramCollection.Add("@National", SqlDbType.VarChar, 50);
+                    paramCollection.Add("@Phone", SqlDbType.VarChar, 50);
+                    paramCollection.Add("@Address", SqlDbType.VarChar, 50);
+                    paramCollection.Add("@Qualification", SqlDbType.VarChar, 50);
+                    paramCollection.Add("@Salary", SqlDbType.Money);
+
+                    paramCollection["@ID"].Value = Id;
+                    paramCollection["@FullName"].Value = nameTextBox.Text;
+                    paramCollection["@DOB"].Value = datePickerBirth.Value;
+                    paramCollection["@Gender"].Value = gender;
+                    paramCollection["@National"].Value = nationalcomboBox.Text;
+                    paramCollection["@Phone"].Value = phoneMaskedTextBox.Text;
+                    paramCollection["@Address"].Value = addressrichTextBox.Text;
+                    paramCollection["@Qualification"].Value = qualificationTextBox.Text;
+                    paramCollection["@Salary"].Value = salaryTextBox.Text;
+
+                    cmd.ExecuteNonQuery();
+                }
+                finally
+                {
+                    con.Close();
+                }
             }
+
+            
         }
 
         private void saveBtn_Click(object sender, EventArgs e)

@@ -35,6 +35,9 @@
             this.button3 = new System.Windows.Forms.Button();
             this.editBtn = new System.Windows.Forms.Button();
             this.employeeDataGridView = new System.Windows.Forms.DataGridView();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.idColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DateOfBirthColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GenderColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -43,8 +46,6 @@
             this.addressColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.qualificationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.salaryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.employeeDataGridView)).BeginInit();
             this.SuspendLayout();
@@ -119,6 +120,7 @@
             this.employeeDataGridView.AllowUserToDeleteRows = false;
             this.employeeDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.employeeDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.idColumn,
             this.NameColumn,
             this.DateOfBirthColumn,
             this.GenderColumn,
@@ -132,6 +134,19 @@
             this.employeeDataGridView.Name = "employeeDataGridView";
             this.employeeDataGridView.Size = new System.Drawing.Size(819, 288);
             this.employeeDataGridView.TabIndex = 26;
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.Filter = "Data file|*.dat";
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // idColumn
+            // 
+            this.idColumn.HeaderText = "ID";
+            this.idColumn.Name = "idColumn";
             // 
             // NameColumn
             // 
@@ -173,14 +188,6 @@
             this.salaryColumn.HeaderText = "Salary";
             this.salaryColumn.Name = "salaryColumn";
             // 
-            // saveFileDialog1
-            // 
-            this.saveFileDialog1.Filter = "Data file|*.dat";
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
             // DetailForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -205,6 +212,9 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button editBtn;
         private System.Windows.Forms.DataGridView employeeDataGridView;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn idColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn DateOfBirthColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn GenderColumn;
@@ -213,8 +223,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn addressColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn qualificationColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn salaryColumn;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

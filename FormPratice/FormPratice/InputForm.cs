@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,12 @@ namespace FormPratice
     public partial class InputForm : Form
     {
         private bool bAdd;
+        private SqlConnection con;
+        private SqlCommand cmd;
+        private int Id;
+        
+        private string connectionString =
+            @"server=PHONGTLSE61770;database=EmployeeDB;uid=sa;pwd=1234";
         public InputForm(bool bAdd = true)
         {
             InitializeComponent();
@@ -20,8 +27,13 @@ namespace FormPratice
             if (bAdd == false)
                 addButton.Text = "Save";
 
-            nationalcomboBox.Items.Add("vietnam");
-            nationalcomboBox.Items.Add("america");
+            nationalcomboBox.Items.Add("Singapore");
+            nationalcomboBox.Items.Add("Japan");
+            nationalcomboBox.Items.Add("Vietnam");
+            nationalcomboBox.Items.Add("America");
+
+            con = new SqlConnection();
+            con.ConnectionString = connectionString;
         }
 
         private DataGridView GetDataGridView()
@@ -35,11 +47,11 @@ namespace FormPratice
             string gender = "";
             if (radioMale.Checked == true)
             {
-                gender = " Male";
+                gender = " M";
             }
             else if (radioFemale.Checked == true)
             {
-                gender = "Female";
+                gender = "F";
             }
 
             DataGridViewRow r = new DataGridViewRow();
@@ -57,6 +69,55 @@ namespace FormPratice
                 );
 
             employeeDataGridView.Rows.Add(r);
+            try
+            {
+                con.Open();
+                cmd = con.CreateCommand();
+                cmd.CommandText = "[InsertEmployee]";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlParameterCollection paramCollection = cmd.Parameters;
+                paramCollection.Add("@FullName", SqlDbType.VarChar, 50);
+                paramCollection.Add("@DOB", SqlDbType.DateTime);
+                paramCollection.Add("@Gender", SqlDbType.Char, 1);
+                paramCollection.Add("@National", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Phone", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Address", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Qualification", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Salary", SqlDbType.Money);
+
+                paramCollection["@FullName"].Value = nameTextBox.Text;
+                paramCollection["@DOB"].Value = datePickerBirth.Value;
+                paramCollection["@Gender"].Value = gender;
+                paramCollection["@National"].Value = nationalcomboBox.Text;
+                paramCollection["@Phone"].Value = phoneMaskedTextBox.Text;
+                paramCollection["@Address"].Value = addressrichTextBox.Text;
+                paramCollection["@Qualification"].Value = qualificationTextBox.Text;
+                paramCollection["@Salary"].Value = salaryTextBox.Text;
+
+                cmd.ExecuteNonQuery();
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        private void exeSql(string sql)
+        {
+            try
+            {
+                con.Open();
+                cmd = new SqlCommand();
+                cmd.Connection = con;
+                cmd.CommandText = sql;
+                cmd.ExecuteReader();
+
+            }
+            finally
+            {
+                con.Close();
+            }
         }
 
         bool validateInput()
@@ -128,15 +189,16 @@ namespace FormPratice
             string gender = "";
             if (radioMale.Checked == true)
             {
-                gender = " Male";
+                gender = " M";
             }
             else if (radioFemale.Checked == true)
             {
-                gender = "Female";
+                gender = "F";
             }
 
             DataGridViewRow r = employeeDataGridView.SelectedRows[0];
             r.SetValues(
+                Id,
                 nameTextBox.Text,
                 datePickerBirth.Value.ToShortDateString(),
                 gender,
@@ -146,7 +208,41 @@ namespace FormPratice
                 qualificationTextBox.Text,
                 salaryTextBox.Text
                 );
-            
+
+            try
+            {
+                con.Open();
+                cmd = con.CreateCommand();
+                cmd.CommandText = "[UpdateEmployee]";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlParameterCollection paramCollection = cmd.Parameters;
+                paramCollection.Add("@ID", SqlDbType.Int);
+                paramCollection.Add("@FullName", SqlDbType.VarChar, 50);
+                paramCollection.Add("@DOB", SqlDbType.DateTime);
+                paramCollection.Add("@Gender", SqlDbType.Char, 1);
+                paramCollection.Add("@National", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Phone", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Address", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Qualification", SqlDbType.VarChar, 50);
+                paramCollection.Add("@Salary", SqlDbType.Money);
+
+                paramCollection["@ID"].Value = Id;
+                paramCollection["@FullName"].Value = nameTextBox.Text;
+                paramCollection["@DOB"].Value = datePickerBirth.Value;
+                paramCollection["@Gender"].Value = gender;
+                paramCollection["@National"].Value = nationalcomboBox.Text;
+                paramCollection["@Phone"].Value = phoneMaskedTextBox.Text;
+                paramCollection["@Address"].Value = addressrichTextBox.Text;
+                paramCollection["@Qualification"].Value = qualificationTextBox.Text;
+                paramCollection["@Salary"].Value = salaryTextBox.Text;
+
+                cmd.ExecuteNonQuery();
+            }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
@@ -170,6 +266,7 @@ namespace FormPratice
 
         public void setInfo(DataGridViewRow row)
         {
+            Id = Int32.Parse(row.Cells["IdColumn"].Value.ToString());
             string fullname = row.Cells["NameColumn"].Value.ToString();
             string dateOfBirth = row.Cells["DateOfBirthColumn"].Value.ToString();
             string gender = row.Cells["GenderColumn"].Value.ToString();
